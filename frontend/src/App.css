@@ -1,0 +1,10 @@
+/* In index.css or App.css */
+html, body {
+    height: 100%;
+    margin: 0; /* Remove default margin */
+  }
+  
+  #root {
+    height: 100%;
+  }
+  
