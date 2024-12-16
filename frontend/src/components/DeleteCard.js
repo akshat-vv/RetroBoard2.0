@@ -10,7 +10,7 @@ const DeleteCard = (props) => {
     const handleDeleteCard = async () => {
         const response = await deleteCard(boardId, columnId, cardId,token);
         if(response.status===200){
-            window.location.reload();
+            // window.location.reload();
         }
     }
   return (

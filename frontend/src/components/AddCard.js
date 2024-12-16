@@ -30,7 +30,7 @@ const AddCard = (props) => {
     const response  = await addCard(cardData, token);
 
     if(response.status===201){
-      window.location.reload();
+      // window.location.reload();
       setOpen(false);
     }
   }
