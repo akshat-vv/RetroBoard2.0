@@ -15,6 +15,7 @@ const Board = () => {
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
   const [cardAdded, setCartAdded] = useState(false);
+  const currentUserId = localStorage.getItem('userId');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,7 +93,7 @@ const Board = () => {
                       {/* Card Footer */}
                       <Stack direction="row" spacing={1} alignItems="center" sx={{ marginTop: 2 }} justifyContent="space-between">
                         <LikeCard card={card} boardId={board._id} columnId={column._id}/>
-                        <DeleteCard boardId={board._id} columnId={column._id} cardId={card._id}/>
+                        {currentUserId === card.createdBy && <DeleteCard boardId={board._id} columnId={column._id} cardId={card._id}/>}
                       </Stack>
                     </CardContent>
                   </Card>

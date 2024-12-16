@@ -8,6 +8,7 @@ const AddCard = (props) => {
   const [error, setError] = useState(false);
   const token = localStorage.getItem('token');
   const name = localStorage.getItem('name');
+  const userId = localStorage.getItem('userId');
 
   const [open, setOpen] = useState(false);
 
@@ -23,6 +24,7 @@ const AddCard = (props) => {
         cardData: {
             User:name,
             content: cardContent,
+            createdBy: userId
         }
     }
     const response  = await addCard(cardData, token);

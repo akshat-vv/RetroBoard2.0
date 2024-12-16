@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
     User: {type: String, require: true},
+    createdBy: {type: String, require: true},
     content: {type: String, require: true},
     likes: {type: Number, default:0},
     likedBy: [
