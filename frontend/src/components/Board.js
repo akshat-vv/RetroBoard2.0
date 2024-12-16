@@ -83,7 +83,7 @@ const Board = () => {
   return (
     <Box sx={{ padding: 3 }}>
       <Typography variant="h4" align="center" sx={{ marginBottom: 3 }}>
-        {board.name}
+        {board.name?.toUpperCase()}
       </Typography>
 
       {/* Columns and Cards */}
