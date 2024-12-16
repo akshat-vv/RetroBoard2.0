@@ -14,17 +14,26 @@ const addCardToColumn = async (req, res) => {
     if (!column) {
       return res.status(404).json({ error: "Column not found" });
     }
+
     // Add new card to the column
     column.cards.push(cardData);
+
+    // Save the updated board
     await board.save();
 
-    res
-      .status(201)
-      .json({ message: "Card added successfully", card: cardData });
+    // Retrieve the newly added card
+    const addedCard = column.cards[column.cards.length - 1];
+
+    // Respond with the complete card details
+    res.status(201).json({
+      message: "Card added successfully",
+      card: addedCard,
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 const deleteCard = async (req, res) => {
   const { boardId, columnId, cardId } = req.params;

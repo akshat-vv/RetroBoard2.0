@@ -3,49 +3,54 @@ import React, { useState } from "react";
 import { addCard } from "../services/api";
 
 const AddCard = (props) => {
-  const { boardId, columnId} = props;
+  const { boardId, columnId, onCardAdded } = props; // Receive onCardAdded from parent
   const [cardContent, setCardContent] = useState("");
   const [error, setError] = useState(false);
-  const token = localStorage.getItem('token');
-  const name = localStorage.getItem('name');
-  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem("token");
+  const name = localStorage.getItem("name");
+  const userId = localStorage.getItem("userId");
 
   const [open, setOpen] = useState(false);
 
-  const handleAddCard = async ()=> {
-    if(cardContent.length===0){
+  const handleAddCard = async () => {
+    if (cardContent.length === 0) {
       setError(true);
       return;
     }
 
     const cardData = {
-        boardId,
-        columnId,
-        cardData: {
-            User:name,
-            content: cardContent,
-            createdBy: userId
-        }
-    }
-    const response  = await addCard(cardData, token);
+      boardId,
+      columnId,
+      cardData: {
+        User: name,
+        content: cardContent,
+        createdBy: userId
+      }
+    };
+    const response = await addCard(cardData, token);
 
-    if(response.status===201){
-      // window.location.reload();
+    if (response.status === 201) {
+      onCardAdded(columnId, response.data.card);
       setOpen(false);
+      setCardContent(""); // Clear the input
+      setError(false); // Reset error
+    } else {
+      console.error("Failed to add card:", response);
     }
-  }
+  };
 
-  const handleOpen = ()=>{
+  const handleOpen = () => {
     setOpen(true);
-  }
-  
-  const handleClose=()=>{
+  };
+
+  const handleClose = () => {
     setOpen(false);
-  }
+    setError(false); // Reset error on close
+  };
 
   return (
     <Box>
-      <Button variant="outlined" color="primary" fullWidth onClick={()=>handleOpen()}>
+      <Button variant="outlined" color="primary" fullWidth onClick={handleOpen}>
         Add Card
       </Button>
       <Modal
@@ -73,20 +78,23 @@ const AddCard = (props) => {
             multiline
             rows={4}
             fullWidth
-            defaultValue=""
             placeholder="Enter your comments"
             variant="outlined"
             margin="normal"
             value={cardContent}
             onChange={(e) => setCardContent(e.target.value)}
           />
-          <Button variant="contained" fullWidth margin="normal" sx={{ mt: 1 }} onClick={()=>handleAddCard()}>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 1 }}
+            onClick={handleAddCard}
+          >
             Submit
           </Button>
         </Box>
       </Modal>
     </Box>
-    
   );
 };
 

@@ -18,6 +18,31 @@ const Board = () => {
   const currentUserId = localStorage.getItem('userId');
   const navigate = useNavigate();
 
+  const onCardAdded = (columnId, newCard) => {
+    // Update the board state to include the new card
+    setBoard((prevBoard) => {
+      const updatedColumns = prevBoard.columns.map((column) =>
+        column._id === columnId
+          ? { ...column, cards: [...column.cards, newCard] }
+          : column
+      );
+      return { ...prevBoard, columns: updatedColumns };
+    });
+  };
+
+  const onCardDeleted = (columnId, cardId) => {
+    setBoard((prevBoard) => {
+      const updatedColumns = prevBoard.columns.map((column) =>
+        column._id === columnId
+          ? { ...column, cards: column.cards.filter((card) => card._id !== cardId) }
+          : column
+      );
+      console.log(updatedColumns);
+      return { ...prevBoard, columns: updatedColumns };
+    });
+  };
+
+
   useEffect(() => {
     const fetchBoard = async () => {
       setLoading(true);
@@ -93,13 +118,13 @@ const Board = () => {
                       {/* Card Footer */}
                       <Stack direction="row" spacing={1} alignItems="center" sx={{ marginTop: 2 }} justifyContent="space-between">
                         <LikeCard card={card} boardId={board._id} columnId={column._id}/>
-                        {currentUserId === card.createdBy && <DeleteCard boardId={board._id} columnId={column._id} cardId={card._id}/>}
+                        {currentUserId === card.createdBy && <DeleteCard boardId={board._id} columnId={column._id} cardId={card._id} onCardDeleted={onCardDeleted}/>}
                       </Stack>
                     </CardContent>
                   </Card>
                 ))
               )}
-              <AddCard boardId={board._id} columnId={column._id}/>
+              <AddCard boardId={board._id} columnId={column._id} onCardAdded={onCardAdded}/>
             </Box>
           </Grid>
         ))}

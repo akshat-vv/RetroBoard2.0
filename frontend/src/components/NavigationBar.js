@@ -44,6 +44,10 @@ const NavigationBar = () => {
     setDrawerOpen(false);
   };
 
+  const goToDashboard = ()=>{
+    navigate('/');
+  }
+
   return (
     <Box
       sx={{
@@ -53,7 +57,7 @@ const NavigationBar = () => {
       }}
     >
       {/* Left Side - Retro Board 2.0 */}
-      <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, cursor:'pointer' }} onClick={goToDashboard}>
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           Retro Board{" "}
           <Box component="span" color="highlight.main">
@@ -91,7 +95,7 @@ const NavigationBar = () => {
             alignItems: "center",
           }}
         >
-          <Link href="/" color="inherit" underline="none">
+          {/* <Link href="/" color="inherit" underline="none">
             <Button color="inherit" sx={{ marginY: 2 }}>
               Home
             </Button>
@@ -100,7 +104,7 @@ const NavigationBar = () => {
             <Button color="inherit" sx={{ marginY: 2 }}>
               Board
             </Button>
-          </Link>
+          </Link> */}
           {!userLoggedIn ? (
             <>
               <Button
@@ -141,14 +145,14 @@ const NavigationBar = () => {
           flexGrow: 2,
         }}
       >
-        <Link href="/" color="inherit" underline="none">
+        {/* <Link href="/" color="inherit" underline="none">
           <Button color="inherit" sx={{ marginX: 2 }}>
             Home
           </Button>
         </Link>
           <Button color="inherit" sx={{ marginX: 2 }}>
             Board
-          </Button>
+          </Button> */}
       </Box>
 
       {/* Desktop Actions */}
