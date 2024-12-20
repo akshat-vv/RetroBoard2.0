@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -6,11 +6,15 @@ import {
   Button,
   Alert,
   CircularProgress,
+  FormHelperText,
+  FormControl,
+  InputLabel,
+  Input,
 } from "@mui/material";
 import { login } from "../services/api";
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import {addUser, removeUser} from '../store/slices/userSlice'
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../store/slices/userSlice";
 
 const Login = (props) => {
   const { changeModalContent, onLogin } = props;
@@ -18,44 +22,73 @@ const Login = (props) => {
   const [password, setPassowrd] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessages, setErroMessages] = useState({
+    email: "",
+    password: "",
+  })
+  // const [validationMessage, setValidationMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const handleLogin = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    const response = await login(email, password);
-    setLoading(false);
 
-    if (response.error) {
-      setError(response.error);
-      console.log(response.error);
-    } else if (response) {
-      const { data } = response;
-      // setUser({
-      //   id: data.id,
-      //   name: data.name,
-      //   role: data.role
-      // });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      localStorage.setItem("name", data.name);
-      localStorage.setItem("userId", data.id);
-      dispatch(addUser({
-        id: data.id,
-        name: data.name,
-        role: data.role
-      }))
-      changeModalContent(null);
-      onLogin();
-      navigate('/');
+    if (!email || !password) {
+      setError("Email and password are required");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await login(email, password);
+      setLoading(false);
+
+      if (
+        response &&
+        (response.status === 200 || response.status === 201) &&
+        response.data
+      ) {
+        const { token, role, name, id } = response.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", id);
+        localStorage.setItem("name", name);
+        localStorage.setItem("role", role);
+        dispatch(addUser({ id, name, role }));
+        changeModalContent(null);
+        onLogin();
+        navigate("/");
+      } else {
+        if (response?.error) {
+          setError(response.error);
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
   const handleSignup = () => {
     changeModalContent("signup");
   };
+
+  const validate = (field)=>{
+    console.log("validating");
+    if(field === "email"){
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!re.test(email)) {
+        setErroMessages({
+          ...errorMessages,
+          email: "Invalid email format"});
+      } else {
+        setErroMessages({
+          ...errorMessages,
+          email: ""
+        })
+      }
+    }
+  }
 
   return (
     <Box>
@@ -77,19 +110,25 @@ const Login = (props) => {
           id="email"
           label="Email"
           variant="outlined"
-          fullWidth
           margin="normal"
+          required={true}
+          type="email"
+          name="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+          onChange={(e)=>setEmail(e.target.value)}
         />
         <TextField
           id="password"
           label="Password"
           variant="outlined"
+          name="password"
           fullWidth
           margin="normal"
+          required={true}
           value={password}
-          onChange={(e) => setPassowrd(e.target.value)}
+          type="password"
+          onChange={(e)=>setPassowrd(e.target.value)}
         />
 
         {/* Button wrapped in Box to control the loader */}
@@ -100,7 +139,7 @@ const Login = (props) => {
             color="primary"
             fullWidth
             sx={{ mt: 2, p: 1 }}
-            disabled={loading} // Disable the button while loading
+            disabled={loading || !email || !password} // Disable the button while loading
           >
             Login
           </Button>
