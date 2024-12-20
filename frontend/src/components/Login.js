@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import { login } from "../services/api";
 import { useNavigate } from 'react-router-dom';
-import { useUser } from "../context/UserContext";
+import { useSelector, useDispatch } from 'react-redux';
+import {addUser, removeUser} from '../store/slices/userSlice'
 
 const Login = (props) => {
   const { changeModalContent, onLogin } = props;
@@ -17,9 +18,8 @@ const Login = (props) => {
   const [password, setPassowrd] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const {setUser} = useUser();
-
+  const dispatch = useDispatch();
+  const emailFromRedux = useSelector(state => state.user.email);
   const navigate = useNavigate();
 
 
@@ -34,15 +34,20 @@ const Login = (props) => {
       console.log(response.error);
     } else if (response) {
       const { data } = response;
-      setUser({
-        id: data.id,
-        name: data.name,
-        role: data.role
-      });
+      // setUser({
+      //   id: data.id,
+      //   name: data.name,
+      //   role: data.role
+      // });
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
       localStorage.setItem("name", data.name);
       localStorage.setItem("userId", data.id);
+      dispatch(addUser({
+        id: data.id,
+        name: data.name,
+        role: data.role
+      }))
       changeModalContent(null);
       onLogin();
       navigate('/');
@@ -55,6 +60,7 @@ const Login = (props) => {
 
   return (
     <Box>
+      {" Hello"}{emailFromRedux}
       <Typography
         id="modal-modal-title"
         variant="h6"

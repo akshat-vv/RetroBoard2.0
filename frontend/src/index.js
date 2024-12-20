@@ -5,20 +5,22 @@ import App from './App';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
-import { UserProvider } from "./context/UserContext";
 import { BrowserRouter as Router } from "react-router-dom";
+import { store } from './store/store'
+import { Provider } from 'react-redux'
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <UserProvider>
+  <Provider store={store}>
   <Router>
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Ensures global styles */}
       <App />
     </ThemeProvider>
   </Router>
-  </UserProvider>
+  </Provider>
 
 );

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import UserView from "./UserView";
 import AdminView from "./AdminView";
 import { Box } from "@mui/material";
-import { useUser } from "../context/UserContext";
 import HelloImage from "../assets/images/hello.png";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
-  const { user } = useUser();
   const token = localStorage.getItem('token');
+  const user = useSelector(state=>state.user);
   return (
     <>
       {user?.role === "admin" && token ? <AdminView /> : <UserView />}

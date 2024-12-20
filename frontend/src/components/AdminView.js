@@ -1,11 +1,11 @@
 import React from 'react'
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useUser } from '../context/UserContext';
 import AllBoards from './AllBoards';
 import CreateBoard from './CreateBoard';
+import { useSelector } from 'react-redux';
 
 const AdminView = () => {
-  const {user} = useUser();
+  const user = useSelector(state=>state.user);
   return (
     <Box
     sx={{
@@ -28,6 +28,7 @@ const AdminView = () => {
     >
       Welcome  {" "}
       <Box component="span" color="highlight.main">
+      {/* {user?.name?.toUpperCase()} */}
       {user?.name?.toUpperCase()}
       </Box>
     </Typography>

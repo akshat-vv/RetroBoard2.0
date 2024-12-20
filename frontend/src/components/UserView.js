@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const UserView = () => {
-  const {user} = useUser();
   const [boardId, setBoardId] = useState('');
   const navigate = useNavigate();
+  const user = useSelector(state=>state.user);
   
   const handleJoinBoard = (boardId)=>{
     navigate(`/${boardId}`);
