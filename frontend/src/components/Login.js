@@ -19,7 +19,6 @@ const Login = (props) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const emailFromRedux = useSelector(state => state.user.email);
   const navigate = useNavigate();
 
 
@@ -60,7 +59,6 @@ const Login = (props) => {
 
   return (
     <Box>
-      {" Hello"}{emailFromRedux}
       <Typography
         id="modal-modal-title"
         variant="h6"
