@@ -2,140 +2,61 @@ import axios from "axios";
 
 const API_URL = "https://retroboard2-0.onrender.com/api";
 
-const login = async (email, password) => {
-  const requestBody = {
-    email,
-    password,
+// Utility function for making API requests
+const makeRequest = async (method, url, data = null, token = null) => {
+  const headers = {
+    "Content-Type": "application/json",
   };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   try {
-    const response = await axios.post(`${API_URL}/users/login`, requestBody, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    const response = await axios({
+      method,
+      url: `${API_URL}${url}`,
+      data,
+      headers,
+    });
 
-    if (response.status === 200) {
-      return response;
+    if ([200, 201].includes(response.status)) {
+      return response; // Return the full response for successful cases
     }
   } catch (error) {
     if (error.response) {
-      return error.response.data;
+      return error.response.data; // Return error response from server
     } else if (error.request) {
-      return { error: "No response from the server" };
+      return { error: "No response from the server" }; // Handle no response
     } else {
-      return { error: error.message };
+      return { error: error.message }; // Handle other errors
     }
   }
 };
 
-const signup = async(userData) => {
-  try{
-    const response = await axios.post(`${API_URL}/users/signup`, userData,{
-      headers:{
-       "Content-Type": "application/json",
-      }
-    });
-    console.log("AKSHAT",response);
-    if(response.status === 201){
-      return response
-    }
-  }catch(error){
-    if (error.response) {
-      return error.response.data;
-    } else if (error.request) {
-      return { error: "No response from the server" };
-    } else {
-      return { error: error.message };
-    }
-  }
-}
+// Define API functions
+const login = async (email, password) => {
+  return await makeRequest("post", "/users/login", { email, password });
+};
+
+const signup = async (userData) => {
+  return await makeRequest("post", "/users/signup", userData);
+};
 
 const createBoard = async (boardData, token) => {
-  try{
-    const response  = await axios.post(`${API_URL}/boards/createBoard`, boardData, {
-      headers:{
-        "Authorization": `Bearer ${token}` // Include the token
-      }
-    })
-    console.log(response);
-    if(response.status===201){
-      return response;
-    }
-  }catch(error){
-    if (error.response) {
-      return error.response.data;
-    } else if (error.request) {
-      return { error: "No response from the server" };
-    } else {
-      return { error: error.message };
-    }
-  }
-}
+  return await makeRequest("post", "/boards/createBoard", boardData, token);
+};
 
-const getBoard = async (boardId, token)=>{
-  try{
-    const reponse = await axios.get(`${API_URL}/boards/${boardId}`,{
-      headers:{
-        "Authorization": `Bearer ${token}` // Include the token
-      }
-    });
-    if(reponse.status===200){
-      return reponse;
-    }
-  }catch(error){
-    if (error.response) {
-      return error.response.data;
-    } else if (error.request) {
-      return { error: "No response from the server" };
-    } else {
-      return { error: error.message };
-    }
-  }
-}
+const getBoard = async (boardId, token) => {
+  return await makeRequest("get", `/boards/${boardId}`, null, token);
+};
 
 const getAllBoards = async (token) => {
-  try{
-    const response = await axios.get(`${API_URL}/boards`, {
-      headers: {
-        "Authorization": `Bearer ${token}` // Include the token
-      }
-    });
-    if(response.status===200){
-      return response;
-    }
-  }catch(error){
-    if (error.response) {
-      return error.response.data;
-    } else if (error.request) {
-      return { error: "No response from the server" };
-    } else {
-      return { error: error.message };
-    }
-  }
-} 
+  return await makeRequest("get", "/boards", null, token);
+};
 
-const addCard = async(cardData, token)=>{
-  try{
-    const response = await axios.post(`${API_URL}/cards/add`, cardData, {
-      headers: {
-        "Authorization": `Bearer ${token}` // Include the token
-      }
-  });
-  console.log(response);
-  if(response.status===201){
-    return response;
-  }
-  }catch(error){
-    if (error.response) {
-      return error.response.data;
-    } else if (error.request) {
-      return { error: "No response from the server" };
-    } else {
-      return { error: error.message };
-    }
-  }
-}
+const addCard = async (cardData, token) => {
+  return await makeRequest("post", "/cards/add", cardData, token);
+};
 
 const deleteCard = async (boardId, columnId, cardId, token) => {
   try{
@@ -144,7 +65,6 @@ const deleteCard = async (boardId, columnId, cardId, token) => {
         "Authorization": `Bearer ${token}` // Include the token
       }
     });
-    console.log(response);
     if(response.status===200){
       return response;
     }
@@ -159,37 +79,13 @@ const deleteCard = async (boardId, columnId, cardId, token) => {
   }
 }
 
-const addLike = async (boardId, columnId, cardId,userId, token) => {
-  try {
-    const response = await axios.patch(
-      `${API_URL}/cards/like/${boardId}/${columnId}/${cardId}`,
-      {
-        cardId,
-        userId
-      }, // No body needed for this request, so pass an empty object
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    console.log(response);
-    if (response.status === 200) {
-      return response;
-    }
-  } catch (error) {
-    if (error.response) {
-      // Handle response errors
-      return error.response.data;
-    } else if (error.request) {
-      // Handle no response from server
-      return { error: "No response from the server" };
-    } else {
-      // Handle other errors
-      return { error: error.message };
-    }
-  }
+const addLike = async (boardId, columnId, cardId, userId, token) => {
+  return await makeRequest(
+    "patch",
+    `/cards/like/${boardId}/${columnId}/${cardId}`,
+    { cardId, userId },
+    token
+  );
 };
 
-
-export { login, createBoard, getBoard, addCard, deleteCard, addLike, getAllBoards, signup };
+export { login, signup, createBoard, getBoard, getAllBoards, addCard, deleteCard, addLike };

@@ -11,16 +11,18 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Login from "./Login"; // Import Login component
 import Signup from "./Signup"; // Import Signup component
-import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { removeUser } from "../store/slices/userSlice";
 
 const NavigationBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(localStorage.getItem("token") ? true : false); // Tracks user login state
-  const {user ,setUser} = useUser();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
 
   const handleOpen = (content) => {
     setModalContent(content); // Set content to either 'login' or 'signup'
@@ -37,9 +39,10 @@ const NavigationBar = () => {
   };
 
   const handleLogout = () => {
+    dispatch(removeUser());
     localStorage.clear();
     setUserLoggedIn(false);
-    setUser(null);
+    // setUser(null);
     navigate('/');
     setDrawerOpen(false);
   };

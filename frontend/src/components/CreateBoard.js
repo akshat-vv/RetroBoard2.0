@@ -81,6 +81,7 @@ const CreateBoard = () => {
         variant="contained"
         sx={{ mt: 1 }}
         onClick={handleCreateBoard}
+        disabled={!boardName || !columnInput}
       >
         Create New Board
       </Button>
