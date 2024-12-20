@@ -59,13 +59,25 @@ const addCard = async (cardData, token) => {
 };
 
 const deleteCard = async (boardId, columnId, cardId, token) => {
-  return await makeRequest(
-    "delete",
-    `/cards/delete/${boardId}/${columnId}/${cardId}`,
-    null,
-    token
-  );
-};
+  try{
+    const response = await axios.delete(`${API_URL}/cards/delete/${boardId}/${columnId}/${cardId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}` // Include the token
+      }
+    });
+    if(response.status===200){
+      return response;
+    }
+  }catch(error){
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { error: "No response from the server" };
+    } else {
+      return { error: error.message };
+    }
+  }
+}
 
 const addLike = async (boardId, columnId, cardId, userId, token) => {
   return await makeRequest(
