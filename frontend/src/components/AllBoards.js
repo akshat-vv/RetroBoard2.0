@@ -72,7 +72,7 @@ const AllBoards = () => {
         Latest Boards
       </Typography>
 
-      { boards?.length > 5 && <TextField placeholder="Enter Board Name or Id" onChange={(e)=>filterBoards(e.target.value)} sx={{marginBottom:'20px', width: {xs: '100%', md: '50%'}}}/>}
+      { allBoards?.length > 5 && <TextField placeholder="Enter Board Name or Id" onChange={(e)=>filterBoards(e.target.value)} sx={{marginBottom:'20px', width: {xs: '100%', md: '50%'}}}/>}
       {
         boards?.length === 0 && <NoBoardAvailable/>
       }
