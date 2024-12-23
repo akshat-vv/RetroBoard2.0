@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getAllBoards } from "../services/api";
-import { Box, Card, CardContent, Typography, CircularProgress, Grid } from "@mui/material";
+import { Box, Card, CardContent, Typography, CircularProgress, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const AllBoards = () => {
   const [boards, setBoards] = useState([]);
+  const [allBoards, setAllBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
@@ -14,11 +15,20 @@ const AllBoards = () => {
     navigate(`/${boardId}`);
   };
 
+  const filterBoards = (value) => {
+    if(value===""){
+      setBoards(allBoards);
+    }
+    const filteredBoards = allBoards.filter((board) => board.name.toLowerCase().includes(value.toLowerCase()) || board._id === value);
+    setBoards(filteredBoards);
+  }
+
   useEffect(() => {
     const fetchBoards = async () => {
       try {
         const response = await getAllBoards(token);
         setBoards(response.data);
+        setAllBoards(response.data);
       } catch (error) {
         console.error("Error fetching boards:", error);
         setError("Failed to fetch boards. Please try again later.");
@@ -48,19 +58,24 @@ const AllBoards = () => {
     );
   }
 
-  if (boards?.length === 0) {
+  const NoBoardAvailable = ()=>{
     return (
       <Box textAlign="center" mt={4}>
-        <Typography variant="h6">No boards available.</Typography>
-      </Box>
-    );
+      <Typography variant="h6">No boards available.</Typography>
+    </Box>
+    )
   }
 
   return (
-    <Box p={3} sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", position: {sm : 'static', md: 'absolute'}, bottom:'120px' }}>
+    <Box p={3} sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", bottom:'120px' }}>
       <Typography variant="h4" gutterBottom>
         Latest Boards
       </Typography>
+
+      { boards?.length > 5 && <TextField placeholder="Enter Board Name or Id" onChange={(e)=>filterBoards(e.target.value)} sx={{marginBottom:'20px', width: {xs: '100%', md: '50%'}}}/>}
+      {
+        boards?.length === 0 && <NoBoardAvailable/>
+      }
       <Grid container spacing={3}>
         {boards
           ?.slice(-6)

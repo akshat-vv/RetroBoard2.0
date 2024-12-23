@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 const UserView = () => {
   const [boardId, setBoardId] = useState('');
@@ -60,6 +61,7 @@ const UserView = () => {
       />
       <Button variant="contained" color="primary" onClick={() => handleJoinBoard(boardId)}>
         Join
+        <KeyboardDoubleArrowRightIcon sx={{ml:.5}} color='white'/>
       </Button>
     </Box>
   </Box>

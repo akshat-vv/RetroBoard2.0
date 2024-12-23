@@ -14,6 +14,9 @@ import Signup from "./Signup"; // Import Signup component
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { removeUser } from "../store/slices/userSlice";
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 const NavigationBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -117,6 +120,7 @@ const NavigationBar = () => {
                 onClick={() => handleOpen("login")}
               >
                 Login
+                <LoginIcon sx={{ml:1}} color="highlight"/>
               </Button>
               <Button
                 variant="contained"
@@ -125,6 +129,7 @@ const NavigationBar = () => {
                 onClick={() => handleOpen("signup")}
               >
                 Signup
+                <PersonOutlineIcon sx={{ml:1}} color="white"/>
               </Button>
             </>
           ) : (
@@ -135,6 +140,7 @@ const NavigationBar = () => {
               onClick={handleLogout}
             >
               Logout
+              <LogoutIcon sx={{ml:1}} color="highlight"/>
             </Button>
           )}
         </Box>
@@ -168,6 +174,7 @@ const NavigationBar = () => {
               onClick={() => handleOpen("login")}
             >
               Login
+              <LoginIcon sx={{ml:1}} color="highlight"/>
             </Button>
             <Button
               variant="contained"
@@ -175,6 +182,7 @@ const NavigationBar = () => {
               onClick={() => handleOpen("signup")}
             >
               Signup
+              <PersonOutlineIcon sx={{ml:1}} color="white"/>
             </Button>
           </>
         ) : (
@@ -184,6 +192,7 @@ const NavigationBar = () => {
             onClick={handleLogout}
           >
             Logout
+            <LogoutIcon sx={{ml:1}} color="highlight"/>
           </Button>
         )}
       </Box>
