@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_URL = "https://retroboard2-0.onrender.com/api";
+//  const API_URL = "http://localhost:8080/api";
 
 // Utility function for making API requests
 const makeRequest = async (method, url, data = null, token = null) => {
@@ -88,4 +89,27 @@ const addLike = async (boardId, columnId, cardId, userId, token) => {
   );
 };
 
-export { login, signup, createBoard, getBoard, getAllBoards, addCard, deleteCard, addLike };
+
+const deleteBoard = async(boardId, token)=>{
+  try{
+    const response = await axios.delete(`${API_URL}/boards/${boardId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}` // Include the token
+      }
+    });
+    console.log(response);
+    if(response.status===200){
+      return response;
+    }
+  }catch(error){
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { error: "No response from the server" };
+    } else {
+      return { error: error.message };
+    }
+  }
+}
+
+export { login, signup, createBoard, getBoard, getAllBoards, addCard, deleteCard, addLike, deleteBoard };

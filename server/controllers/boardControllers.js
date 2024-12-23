@@ -9,6 +9,17 @@ const createBoard = async(req,res)=>{
         res.status(400).json({error: error.message});
     }
 }
+
+const deleteBoard = async(req,res)=>{
+    try{
+        const boardId = req.params.boardId;
+        const board = await Board.findByIdAndDelete(boardId);
+        if(!board) return res.status(400).json({message: 'Board not found'});
+        res.status(200).json({message: 'Board deleted successfully'});
+    }catch(error){
+        res.status(400).json({error: error.message});
+    }
+}
   
 const getAllBoards = async (req,res)=>{
     try{
@@ -30,4 +41,4 @@ const getBoardById = async (req,res)=>{
     }
 }
 
-module.exports = {createBoard, getAllBoards, getBoardById};
+module.exports = {createBoard, getAllBoards, getBoardById, deleteBoard};

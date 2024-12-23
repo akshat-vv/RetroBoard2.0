@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getAllBoards } from "../services/api";
+import { getAllBoards, deleteBoard } from "../services/api";
 import { Box, Card, CardContent, Typography, CircularProgress, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ClearIcon from '@mui/icons-material/Clear';
 
 const AllBoards = () => {
   const [boards, setBoards] = useState([]);
@@ -23,20 +24,20 @@ const AllBoards = () => {
     setBoards(filteredBoards);
   }
 
-  useEffect(() => {
-    const fetchBoards = async () => {
-      try {
-        const response = await getAllBoards(token);
-        setBoards(response.data);
-        setAllBoards(response.data);
-      } catch (error) {
-        console.error("Error fetching boards:", error);
-        setError("Failed to fetch boards. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchBoards = async () => {
+    try {
+      const response = await getAllBoards(token);
+      setBoards(response.data);
+      setAllBoards(response.data);
+    } catch (error) {
+      console.error("Error fetching boards:", error);
+      setError("Failed to fetch boards. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchBoards();
   }, [token]);
 
@@ -64,6 +65,17 @@ const AllBoards = () => {
       <Typography variant="h6">No boards available.</Typography>
     </Box>
     )
+  }
+
+  const handleDeleteBoard = async (e,boardId)=>{
+    e.stopPropagation();
+    try{
+      const response = await deleteBoard(boardId, token);
+      fetchBoards();
+    }catch(error){
+      console.error("Error fetching boards:", error);
+      setError("Failed to fetch boards. Please try again later.");
+    }
   }
 
   return (
@@ -97,9 +109,13 @@ const AllBoards = () => {
                 onClick={()=>{handleJoinBoard(board._id)}}
               >
                 <CardContent>
+                  <Box display={"flex"} justifyContent={"space-between"}>
                   <Typography variant="h6" gutterBottom color="primary">
                     {board.name.toUpperCase()}
                   </Typography>
+                  <ClearIcon color="secondary" onClick={(e)=>handleDeleteBoard(e,board._id)}/>
+                  </Box>
+
                   <Typography variant="body2" color="textSecondary">
                     {board.columns.length} columns
                   </Typography>
